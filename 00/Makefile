@@ -13,5 +13,5 @@ Timer.o: Timer.cpp
 clean:
 	rm -rf *.o
 run:
-	./sum_by_columns
+	./sum_by_columns	
 	./sum_by_rows
