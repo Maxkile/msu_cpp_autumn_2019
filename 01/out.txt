@@ -1,0 +1,10 @@
+./test "3+12*3+2"
+43
+POS2
+42
+POS5
+43
+POS7
+2
+POS8
+Empty string!

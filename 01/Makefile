@@ -1,10 +1,12 @@
-test: test.o CalcList.o
-	g++ test.o CalcList.o -o test --std=c++14
-test.o: test.cpp
-	g++ -Wall -Werror -O2 -c test.cpp --std=c++14
-CalcList.o: CalcList.cpp
-	g++ -Wall -Werror -O2 -c CalcList.cpp --std=c++14
+main: main.o CalcSimple.o
+	g++ main.o CalcSimple.o -o main --std=c++14
+main.o: main.cpp
+	g++ -Wall -Werror -O2 -c main.cpp --std=c++14
+CalcSimple.o: CalcSimple.cpp
+	g++ -Wall -Werror -O2 -c CalcSimple.cpp --std=c++14
 clean:
 	rm -r *.o
 run:
-	./test
+	./test "13-12/12 + 213123 - 12 / 2"
+test:
+	python3 ./tester.py 

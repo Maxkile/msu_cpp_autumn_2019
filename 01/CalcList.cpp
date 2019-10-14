@@ -57,6 +57,21 @@ public:
 
 };
 
+class DivideByZero: public Exception
+{
+public:
+	DivideByZero()
+	{
+		printLog();
+	}
+
+	void printLog(const string& str = "",int pos = 0) const override
+	{
+		cout << "Divide by zero!" << endl;
+	} 
+
+};
+
 class Calc
 {
 	double result;
@@ -117,15 +132,13 @@ class Calc
 		}
 		if (lexemes.empty()) throw new EmptyStringException();
 		else if ((lexemes.back() == "+") || (lexemes.back()  == "-") || (lexemes.back() == "*") || (lexemes.back()  == "/")) throw new NotALexemeException(rawStr,strlen(rawStr) - 1);
-
+		else if ((lexemes.front() == "*") || (lexemes.front() == "/")) throw new NotALexemeException(rawStr,0);
 		return lexemes;		
 	}
 
 	static list<string> processRepeatingOperations(const list<string>& lexemes)
 	{	
 		list<string> res;
-		list<string>::const_iterator it = lexemes.begin();
-		if ((*it == "*") || (*it == "/")) throw new WrongPosException(*it);
 		for(list<string>::const_iterator i = lexemes.begin(); i != lexemes.end();++i)
 		{
 			if ((*i == "+") || (*i == "-"))
@@ -169,32 +182,67 @@ public:
 		return Calc(modLexemes);
 	}
 
-
 	double calculate()
 	{
-		list<string>::iterator iter = lexemes.begin();
-		result = TERM(iter);	
-		while(iter != lexemes.end() || ((*iter == "+") || (*iter == "-")))
+		list<string>::iterator global = lexemes.begin();
+		result = term(global);
+		string lexeme = *(global++);
+		while(global != lexemes.end())
 		{
-			string oper = *iter;
-			iter++;
-			if (oper == "+") result = result + TERM(iter);
-			else if (oper == "-") result = result - TERM(iter);
+			if (lexeme == "+")
+			{
+				result+=term(global);
+				lexeme = *(global++);
+			}
+			else if (lexeme == "-")
+			{
+				result-=term(global);
+				lexeme = *(global++);	
+			}
+			else
+			{
+				return getResult();
+			}
 		}
-		return result;
+		return getResult();
 	}
 
-	double TERM(list<string>::iterator& iter)
+
+	double term(list<string>::iterator& global)
 	{
-		result = atof((*iter).c_str());
-		while(iter != lexemes.end() || ((*iter == "*") || (*iter == "/")))
+		// double tmp = atof(getNextLexeme(global).c_str());
+		double tmp = atof((*(global++)).c_str());
+		// string lexeme = getNextLexeme(global);
+		string lexeme = *(global++);
+		while(true)
 		{
-			string oper = *iter;
-			iter++;
-			if (oper == "*") result = result * atof((*iter).c_str());
-			else if (oper == "-") result = result / atof((*iter).c_str());
+			if (lexeme == "*")
+			{
+				// tmp*=atof(getNextLexeme(global).c_str());
+				tmp*=atof((*(global++)).c_str());
+				// lexeme = getNextLexeme(global);
+				lexeme = *(global++);
+			}
+			else if (lexeme == "/")
+			{
+				// double number = atof(getNextLexeme(global).c_str());
+				double number = atof((*(global++)).c_str());
+				if (number == 0) throw new DivideByZero();
+				else	
+				{
+					tmp/=number;
+				}
+				// lexeme = getNextLexeme(global);
+				lexeme = *(global++);
+			}
+			else
+			{
+				putBackLexeme(global);
+				return tmp;
+			}
+
 		}
-		return 1;
+
 	}
 
 	list<string> getLexemes()
@@ -208,6 +256,24 @@ public:
 		{
 			cout << *i << endl;
 		}
+	}
+
+	string getNextLexeme(list<string>::iterator& global)
+	{
+		cout << *global << endl;
+		list<string>::iterator j = global;
+		global++;
+		return *j;
+	}
+
+	void putBackLexeme(list<string>::iterator& global)
+	{
+		global--;
+	}
+
+	double getResult()
+	{
+		return result;
 	}
 };	
 
