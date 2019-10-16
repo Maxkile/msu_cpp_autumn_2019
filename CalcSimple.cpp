@@ -40,6 +40,20 @@ public:
 
 };
 
+class WrongNumberFormat: public Exception
+{
+public:
+    WrongNumberFormat(const string& str)
+    {
+        printLog(str);
+    }
+
+    void printLog(const string& str,int pos = 0) const override
+    {
+        cout << "\"" << "Wrong number format in " <<  "\'" << str << "\'" << endl;
+    }
+};
+
 class Calc
 {
 
@@ -71,6 +85,7 @@ class Calc
     {
         string tmp = "";
 		int rawStrLen = rawStr.size();
+        int points = 0;
         bool prevWasDigit = false;
         prevPos = fromPos;
         while(fromPos < rawStrLen)
@@ -80,22 +95,35 @@ class Calc
 				prevWasDigit = false;
 				if (!tmp.empty())
 				{
-                    return tmp;
+                    if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw new WrongNumberFormat(rawStr);
+                    else
+                    {
+                        return tmp;
+                    }
 				}
 				fromPos++;
 			} 
 			else if (isdigit(rawStr[fromPos]) || rawStr[fromPos] == '.')
 			{
-				prevWasDigit = true;
-				tmp += rawStr[fromPos];
-				fromPos++;
+                if (rawStr[fromPos] == '.') points++;
+                if (points > 1) throw new WrongNumberFormat(rawStr);
+                else
+                {
+				    prevWasDigit = true;    
+				    tmp += rawStr[fromPos];
+				    fromPos++;
+                }
 			}
 			else if ((rawStr[fromPos] == '*') || (rawStr[fromPos] == '/'))
 			{
                 if ((rawStr[fromPos+1] == '*') || (rawStr[fromPos+1] == '/') || (fromPos == 0)) throw new NotALexemeException(rawStr,fromPos);
                 else if (prevWasDigit)
 				{
-                    return tmp;
+                    if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw new WrongNumberFormat(rawStr);
+                    else
+                    {
+                        return tmp;
+                    } 
 				}
                 else
                 {
@@ -109,12 +137,17 @@ class Calc
             {
                 if (prevWasDigit)
 				{
-                    return tmp;
+                    if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw new WrongNumberFormat(rawStr);
+                    else
+                    {
+                        return tmp;
+                    }
 				}
                 int mincnt = 0;
                 if (rawStr[fromPos] == '-') mincnt++;
                 fromPos++;
-                if ((mincnt += countMinus(fromPos) % 2) != 0) tmp+='-';
+                mincnt += countMinus(fromPos);
+                if ((mincnt % 2) != 0) tmp+='-';
                 else tmp+='+';
                 prevWasDigit = false;
                 return tmp;
@@ -123,7 +156,11 @@ class Calc
 		}
 		if (!tmp.empty())
 		{
-			return tmp;
+           if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw new WrongNumberFormat(rawStr);
+           else
+           {
+               return tmp;
+           }
 		}
         throw new NotALexemeException(rawStr,fromPos);	
     }
@@ -131,13 +168,13 @@ class Calc
     double term(int& fromPos,int& prevPos)
 	{
         string lexeme = getNextLexem(fromPos,prevPos);
-        double tmp;
-        if (lexeme == "-") tmp = signNumber(fromPos,prevPos);
-        else if (lexeme == "+") throw new NotALexemeException(rawStr,fromPos - 1);//"-1" because getter will go to next symbol there
-        else
-        {
-            tmp = atof(lexeme.c_str());
-        }
+        // double tmp;
+        // if (lexeme == "-") tmp = (-1)*atof(getNextLexem(fromPos,prevPos).c_str());
+        // else if (lexeme == "+")
+        // {
+        //     tmp = atof(getNextLexem(fromPos,prevPos).c_str());
+        // }
+        double tmp = atof(lexeme.c_str());
         while(fromPos < rawStrSize)
         {
             string lexeme = getNextLexem(fromPos,prevPos);
@@ -157,7 +194,11 @@ class Calc
 			{
                 lexeme = getNextLexem(fromPos,prevPos);
                 double num;
-                if (lexeme == "-") num = signNumber(fromPos,prevPos);
+                if (lexeme == "-")
+                {
+                    cout << "HERE" << endl;
+                    num = signNumber(fromPos,prevPos);
+                } 
                 else if (lexeme == "+") throw new NotALexemeException(rawStr,fromPos - 1);//"-1" because getter will go to next symbol there
                 else
                 {
@@ -211,6 +252,7 @@ public:
 
     double calculate()
 	{
+        cout << "CALCULATE" << endl;
 		int fromPos = 0;
         int prevPos = fromPos;
 		double result = term(fromPos,prevPos);

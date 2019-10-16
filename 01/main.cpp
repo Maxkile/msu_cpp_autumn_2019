@@ -1,4 +1,4 @@
-#include "CalcSimple.cpp"
+#include "Calc.cpp"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -18,6 +18,8 @@ int main(int argc, char const *argv[])
 		else
 		{
 			Calc calc(argv[1]);
+			// cout.precision(6);
+    		// cout.setf(ios::fixed);
 			cout << calc.calculate();
 		} 
 	} catch(Exception* exp)
