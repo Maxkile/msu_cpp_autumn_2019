@@ -3,238 +3,212 @@
 #include <string>
 #include <list>
 #include <cstdlib>
+#include "Calc.hpp"
 
 using namespace std;
 
-class Exception{
-	virtual void printLog(const string& str,int pos) const = 0;
-};
 
-class NotALexemeException: public Exception
+NotALexemeException::NotALexemeException(const string& str,int pos)
 {
-public:
-	NotALexemeException(const string& str,int pos)
-	{
-		printLog(str,pos);
-	}
+	printLog(str,pos);
+}
 
-	void printLog(const string& str,int pos) const override
-	{
-		cout << "\"" << "Wrong symbol " << "\'" << str[pos] << "\'" << " in " << str << " in pos " << pos << "\"" << endl;
-	} 
-
-};
-
-class DivideByZero: public Exception
+void NotALexemeException::printLog(const string& str,int pos) const
 {
-public:
-	DivideByZero()
-	{
-		printLog();
-	}
+	cout << "\"" << "Wrong symbol " << "\'" << str[pos] << "\'" << " in " << str << " in pos " << pos << "\"" << endl;
+} 
 
-	void printLog(const string& str = "",int pos = 0) const override
-	{
-		cout << "Divide by zero!" << endl;
-	} 
-
-};
-
-class WrongNumberFormat: public Exception
+DivideByZero::DivideByZero()
 {
-public:
-    WrongNumberFormat(const string& str)
-    {
-        printLog(str);
-    }
+	printLog();
+}
 
-    void printLog(const string& str,int pos = 0) const override
-    {
-        cout << "\"" << "Wrong number format in " <<  "\'" << str << "\'" << endl;
-    }
-};
-
-class Calc
+void DivideByZero::printLog(const string& str,int pos) const
 {
+	cout << "Divide by zero!" << endl;
+} 
 
-    string rawStr;
-    int rawStrSize;
 
-    void putLexemeBack(int& fromPos,int& prevPos)
-    {
-        fromPos = prevPos;
-    }
+WrongNumberFormat::WrongNumberFormat(const string& str)
+{
+    printLog(str);
+}
 
-    string getNextLexem(int& fromPos,int& prevPos)
-    {
-        string tmp = "";
-		int rawStrLen = rawStr.size();
-        int pointsNum = 0;
-        bool prevWasDigit = false;
-        prevPos = fromPos;//used to implement putback
-        while(fromPos < rawStrLen)
+void WrongNumberFormat::printLog(const string& str,int pos) const
+{
+    cout << "\"" << "Wrong number format in " <<  "\'" << str << "\'" << endl;
+}
+
+void Calc::putLexemeBack(int& fromPos,int& prevPos)
+{
+    fromPos = prevPos;
+}
+
+string Calc::getNextLexem(int& fromPos,int& prevPos)
+{
+    string tmp = "";
+    int rawStrLen = rawStr.size();
+    int pointsNum = 0;
+    bool prevWasDigit = false;
+    prevPos = fromPos;//used to implement putback
+    while(fromPos < rawStrLen)
+	{
+	    if(isspace(rawStr[fromPos]))
 		{
-			if(isspace(rawStr[fromPos]))
+		    prevWasDigit = false;
+			if (!tmp.empty())
 			{
-				prevWasDigit = false;
-				if (!tmp.empty())
-				{
-                    if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw new WrongNumberFormat(rawStr);
-                    else
-                    {
-                        return tmp;
-                    }
-				}
+                if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw WrongNumberFormat(rawStr);
+                else
+                {
+                    return tmp;
+                }
+			}
+			fromPos++;
+		} 
+		else if (isdigit(rawStr[fromPos]) || rawStr[fromPos] == '.')
+		{
+            if (rawStr[fromPos] == '.') pointsNum++;
+            if (pointsNum > 1) throw WrongNumberFormat(rawStr);
+            else
+            {
+			    prevWasDigit = true;    
+				tmp += rawStr[fromPos];
 				fromPos++;
-			} 
-			else if (isdigit(rawStr[fromPos]) || rawStr[fromPos] == '.')
-			{
-                if (rawStr[fromPos] == '.') pointsNum++;
-                if (pointsNum > 1) throw new WrongNumberFormat(rawStr);
-                else
-                {
-				    prevWasDigit = true;    
-				    tmp += rawStr[fromPos];
-				    fromPos++;
-                }
-			}
-			else if ((rawStr[fromPos] == '*') || (rawStr[fromPos] == '/') || (rawStr[fromPos] == '+') || (rawStr[fromPos] == '-'))
-			{
-                if (prevWasDigit)
-				{
-                    if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw new WrongNumberFormat(rawStr);
-                    else
-                    {
-                        return tmp;
-                    } 
-				}
-                else
-                {
-                    tmp+=rawStr[fromPos];
-				    prevWasDigit = false;
-                    fromPos++;
-				    return tmp;
-                }
-			}
-			else throw new NotALexemeException(rawStr,fromPos);
+            }
 		}
-		if (!tmp.empty())
+		else if ((rawStr[fromPos] == '*') || (rawStr[fromPos] == '/') || (rawStr[fromPos] == '+') || (rawStr[fromPos] == '-'))
 		{
-           if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw new WrongNumberFormat(rawStr);
-           else
-           {
-               return tmp;
-           }
+            if (prevWasDigit)
+		    {
+                if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw WrongNumberFormat(rawStr);
+                else
+                {
+                    return tmp;
+                } 
+			}
+            else
+            {
+                tmp+=rawStr[fromPos];
+			    prevWasDigit = false;
+                fromPos++;
+				return tmp;
+            }
 		}
-        throw new NotALexemeException(rawStr,fromPos);	
-    }
-    
-    double term(int& fromPos,int& prevPos)
+		else throw NotALexemeException(rawStr,fromPos);
+	}
+	if (!tmp.empty())
 	{
-        double tmp;
-        string lexeme = getNextLexem(fromPos,prevPos);
-        if (lexeme == "-") tmp = Number(fromPos,prevPos);
-        else if (lexeme == "+") throw new NotALexemeException(rawStr,fromPos - 1); //"-1" because getter will already go to next symbol there
+        if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw WrongNumberFormat(rawStr);
         else
         {
-            tmp = atof(lexeme.c_str());
+            return tmp;
         }
-        while(fromPos < rawStrSize)
-        {
-            string lexeme = getNextLexem(fromPos,prevPos);
-            if (lexeme == "*")
-            {
-                lexeme = getNextLexem(fromPos,prevPos);
-                double num;
-                if (lexeme == "-") num = Number(fromPos,prevPos);
-                else if (lexeme == "+") throw new NotALexemeException(rawStr,fromPos - 1);//"-1" because getter will already go to next symbol there
-                else
-                {
-                    num = atof(lexeme.c_str());
-                }
-				tmp*=num;
-			}
-			else if (lexeme == "/")
-			{
-                lexeme = getNextLexem(fromPos,prevPos);
-                double num;
-                if (lexeme == "-")
-                {
-                    num = Number(fromPos,prevPos);
-                } 
-                else if (lexeme == "+") throw new NotALexemeException(rawStr,fromPos - 1);//"-1" because getter will already go to next symbol there
-                else
-                {
-                    num = atof(lexeme.c_str());
-                }
-			    if (num == 0) throw new DivideByZero();
-			    else	
-			    {
-				    tmp/=num;
-				}
-			}
-			else
-			{
-				putLexemeBack(fromPos,prevPos);
-				return tmp;
-			}
-
-        }
-        return tmp;
-    }
-
-    double Number(int& fromPos,int& prevPos)
+	}
+    throw NotALexemeException(rawStr,fromPos);	
+}
+    
+double Calc::term(int& fromPos,int& prevPos)
+{
+    double tmp;
+    string lexeme = getNextLexem(fromPos,prevPos);
+    if (lexeme == "-") tmp = Number(fromPos,prevPos);
+    else if (lexeme == "+") throw NotALexemeException(rawStr,fromPos - 1); //"-1" because getter will already go to next symbol there
+    else
     {
-        int minusNum = 1;
-        string lexeme;
-        while(true)
+       tmp = atof(lexeme.c_str());
+    }
+    while(fromPos < rawStrSize)
+    {
+        string lexeme = getNextLexem(fromPos,prevPos);
+        if (lexeme == "*")
         {
             lexeme = getNextLexem(fromPos,prevPos);
-            if ((lexeme == "+") || (lexeme == "/") || (lexeme == "*")) throw new NotALexemeException(rawStr,fromPos - 1); //"-1" because getter will already go to next symbol there
-            else if (lexeme == "-")
+            double num;
+            if (lexeme == "-") num = Number(fromPos,prevPos);
+            else if (lexeme == "+") throw NotALexemeException(rawStr,fromPos - 1);//"-1" because getter will already go to next symbol there
+            else
             {
-                minusNum++;
+                num = atof(lexeme.c_str());
+            }
+			tmp*=num;
+		}
+		else if (lexeme == "/")
+		{
+            lexeme = getNextLexem(fromPos,prevPos);
+            double num;
+            if (lexeme == "-")
+            {
+                num = Number(fromPos,prevPos);
             } 
-            else break;
-        }
-        if (((minusNum % 2) != 0) && (lexeme != "0"))
-        {
-            return (-1)*atof(lexeme.c_str());
-        } 
-        else return atof(lexeme.c_str());
+            else if (lexeme == "+") throw NotALexemeException(rawStr,fromPos - 1);//"-1" because getter will already go to next symbol there
+            else
+            {
+                num = atof(lexeme.c_str());
+            }
+			if (num == 0) throw DivideByZero();
+			else	
+			{
+			    tmp/=num;
+			}
+		}
+		else
+		{
+		    putLexemeBack(fromPos,prevPos);
+			return tmp;
+		}
     }
+    return tmp;
+}
 
-public:
-
-    Calc(const char* rawStr)
+double Calc::Number(int& fromPos,int& prevPos)
+{
+    int minusNum = 1;
+    string lexeme;
+    while(true)
     {
-        this->rawStr = string(rawStr);
-        this->rawStrSize = this->rawStr.size();
-    }
-
-    double calculate()
-	{
-		int fromPos = 0;
-        int prevPos = fromPos;
-		double result = term(fromPos,prevPos);
-        while(fromPos < rawStrSize)
+        lexeme = getNextLexem(fromPos,prevPos);
+        if ((lexeme == "+") || (lexeme == "/") || (lexeme == "*")) throw NotALexemeException(rawStr,fromPos - 1); //"-1" because getter will already go to next symbol there
+        else if (lexeme == "-")
         {
-            string lexeme = getNextLexem(fromPos,prevPos);
-            if (lexeme == "+")
-			{
-				result+=term(fromPos,prevPos);
-			}   
-			else if (lexeme == "-")
-			{
-				result-=term(fromPos,prevPos);
-			}
-			else
-			{
-				putLexemeBack(fromPos,prevPos);
-				return result;
-			}
-        }
-        return result;
-	}
+            minusNum++;
+        } 
+        else break;
+    }
+    if (((minusNum % 2) != 0) && (lexeme != "0"))
+    {
+        return (-1)*atof(lexeme.c_str());
+    } 
+    else return atof(lexeme.c_str());
+}
 
-};
+Calc::Calc(const char* rawStr)
+{
+    this->rawStr = string(rawStr);
+    this->rawStrSize = this->rawStr.size();
+}
+
+double Calc::calculate()
+{
+	int fromPos = 0;
+    int prevPos = fromPos;
+    double result = term(fromPos,prevPos);
+    while(fromPos < rawStrSize)
+    {
+        string lexeme = getNextLexem(fromPos,prevPos);
+        if (lexeme == "+")
+		{
+			result+=term(fromPos,prevPos);
+		}   
+		else if (lexeme == "-")
+		{
+			result-=term(fromPos,prevPos);
+		}
+		else
+		{
+			putLexemeBack(fromPos,prevPos);
+	    	return result;
+    	}
+    }
+    return result;
+}

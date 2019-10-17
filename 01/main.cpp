@@ -1,11 +1,4 @@
-#include "Calc.cpp"
-#include <iostream>
-#include <vector>
-#include <map>
-#include <cstring>
-#include <string>
-#include <list>
-#include <cstdlib>
+#include "Calc.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -13,18 +6,16 @@ int main(int argc, char const *argv[])
 		if (argv[1] == nullptr)
 		{
 			cout << "No input expression!" << endl;
-			exit(1);
+			return(1);
 		}
 		else
 		{
 			Calc calc(argv[1]);
-			// cout.precision(6);
-    		// cout.setf(ios::fixed);
 			cout << calc.calculate();
 		} 
-	} catch(Exception* exp)
+	} catch(Exception& exp)
 		{
-			exit(2);
+			return(2);
 		}
 	return 0;
 }
