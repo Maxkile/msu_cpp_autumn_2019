@@ -7,6 +7,6 @@ Calc.o: Calc.cpp Calc.hpp
 clean:
 	rm -r *.o
 run:
-	./test "13-12/12 + 213123 - 12 / 2"
+	./main "13-12/12 + 213123 - 12 / 2"
 test:
 	python3 ./tester.py 
