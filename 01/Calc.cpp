@@ -3,41 +3,43 @@
 #include <string>
 #include <list>
 #include <cstdlib>
+#include <exception>
+#include <stdexcept>
 #include "Calc.hpp"
 
 using namespace std;
 
 
-NotALexemeException::NotALexemeException(const string& str,int pos)
-{
-	printLog(str,pos);
-}
+// NotALexemeException::NotALexemeException(const string& str,int pos)
+// {
+// 	printLog(str,pos);
+// }
 
-void NotALexemeException::printLog(const string& str,int pos) const
-{
-	cout << "\"" << "Wrong symbol " << "\'" << str[pos] << "\'" << " in " << str << " in pos " << pos << "\"" << endl;
-} 
+// void NotALexemeException::printLog(const string& str,int pos) const
+// {
+// 	cout << "\"" << "Wrong symbol " << "\'" << str[pos] << "\'" << " in " << str << " in pos " << pos << "\"" << endl;
+// } 
 
-DivideByZero::DivideByZero()
-{
-	printLog();
-}
+// DivideByZero::DivideByZero()
+// {
+// 	printLog();
+// }
 
-void DivideByZero::printLog(const string& str,int pos) const
-{
-	cout << "Divide by zero!" << endl;
-} 
+// void DivideByZero::printLog(const string& str,int pos) const
+// {
+// 	cout << "Divide by zero!" << endl;
+// } 
 
 
-WrongNumberFormat::WrongNumberFormat(const string& str)
-{
-    printLog(str);
-}
+// WrongNumberFormat::WrongNumberFormat(const string& str)
+// {
+//     printLog(str);
+// }
 
-void WrongNumberFormat::printLog(const string& str,int pos) const
-{
-    cout << "\"" << "Wrong number format in " <<  "\'" << str << "\'" << endl;
-}
+// void WrongNumberFormat::printLog(const string& str,int pos) const
+// {
+//     cout << "\"" << "Wrong number format in " <<  "\'" << str << "\'" << endl;
+// }
 
 void Calc::putLexemeBack(int& fromPos,int& prevPos)
 {
@@ -58,7 +60,7 @@ string Calc::getNextLexem(int& fromPos,int& prevPos)
 		    prevWasDigit = false;
 			if (!tmp.empty())
 			{
-                if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw WrongNumberFormat(rawStr);
+                if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw invalid_argument("Invalid lexeme");
                 else
                 {
                     return tmp;
@@ -69,7 +71,7 @@ string Calc::getNextLexem(int& fromPos,int& prevPos)
 		else if (isdigit(rawStr[fromPos]) || rawStr[fromPos] == '.')
 		{
             if (rawStr[fromPos] == '.') pointsNum++;
-            if (pointsNum > 1) throw WrongNumberFormat(rawStr);
+            if (pointsNum > 1) throw invalid_argument("Invalid lexeme");
             else
             {
 			    prevWasDigit = true;    
@@ -81,7 +83,7 @@ string Calc::getNextLexem(int& fromPos,int& prevPos)
 		{
             if (prevWasDigit)
 		    {
-                if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw WrongNumberFormat(rawStr);
+                if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw invalid_argument("Invalid lexeme");
                 else
                 {
                     return tmp;
@@ -95,17 +97,17 @@ string Calc::getNextLexem(int& fromPos,int& prevPos)
 				return tmp;
             }
 		}
-		else throw NotALexemeException(rawStr,fromPos);
+		else throw invalid_argument("Invalid lexeme");
 	}
 	if (!tmp.empty())
 	{
-        if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw WrongNumberFormat(rawStr);
+        if ((tmp[0] == '.') || (tmp[tmp.size() - 1] == '.')) throw invalid_argument("Invalid lexeme");
         else
         {
             return tmp;
         }
 	}
-    throw NotALexemeException(rawStr,fromPos);	
+    throw invalid_argument("Invalid lexeme");	
 }
     
 double Calc::term(int& fromPos,int& prevPos)
@@ -113,7 +115,7 @@ double Calc::term(int& fromPos,int& prevPos)
     double tmp;
     string lexeme = getNextLexem(fromPos,prevPos);
     if (lexeme == "-") tmp = Number(fromPos,prevPos);
-    else if (lexeme == "+") throw NotALexemeException(rawStr,fromPos - 1); //"-1" because getter will already go to next symbol there
+    else if ((lexeme == "+") || (lexeme == "*") || (lexeme == "/")) throw invalid_argument("Invalid lexeme"); //"-1" because getter will already go to next symbol there
     else
     {
        tmp = atof(lexeme.c_str());
@@ -126,7 +128,7 @@ double Calc::term(int& fromPos,int& prevPos)
             lexeme = getNextLexem(fromPos,prevPos);
             double num;
             if (lexeme == "-") num = Number(fromPos,prevPos);
-            else if (lexeme == "+") throw NotALexemeException(rawStr,fromPos - 1);//"-1" because getter will already go to next symbol there
+            else if (lexeme == "+") throw invalid_argument("Invalid lexeme"); //"-1" because getter will already go to next symbol there
             else
             {
                 num = atof(lexeme.c_str());
@@ -141,12 +143,12 @@ double Calc::term(int& fromPos,int& prevPos)
             {
                 num = Number(fromPos,prevPos);
             } 
-            else if (lexeme == "+") throw NotALexemeException(rawStr,fromPos - 1);//"-1" because getter will already go to next symbol there
+            else if (lexeme == "+") throw invalid_argument("Invalid lexeme");//"-1" because getter will already go to next symbol there
             else
             {
                 num = atof(lexeme.c_str());
             }
-			if (num == 0) throw DivideByZero();
+			if (num == 0) throw runtime_error("Division by zero!");
 			else	
 			{
 			    tmp/=num;
@@ -168,7 +170,7 @@ double Calc::Number(int& fromPos,int& prevPos)
     while(true)
     {
         lexeme = getNextLexem(fromPos,prevPos);
-        if ((lexeme == "+") || (lexeme == "/") || (lexeme == "*")) throw NotALexemeException(rawStr,fromPos - 1); //"-1" because getter will already go to next symbol there
+        if ((lexeme == "+") || (lexeme == "/") || (lexeme == "*")) throw invalid_argument("Invalid lexeme");  //"-1" because getter will already go to next symbol there
         else if (lexeme == "-")
         {
             minusNum++;

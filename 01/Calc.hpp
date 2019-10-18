@@ -9,35 +9,35 @@
 
 using namespace std;
 
-class Exception{
-	virtual void printLog(const string& str,int pos) const = 0;
-};
+// class Exception{
+// 	virtual void printLog(const string& str,int pos) const = 0;
+// };
 
-class NotALexemeException: public Exception
-{
-public:
-	NotALexemeException(const string& str,int pos);
+// class NotALexemeException: public Exception
+// {
+// public:
+// 	NotALexemeException(const string& str,int pos);
 
-	void printLog(const string& str,int pos) const;
+// 	void printLog(const string& str,int pos) const;
 
-};
+// };
 
-class DivideByZero: public Exception
-{
-public:
-	DivideByZero();
+// class DivideByZero: public Exception
+// {
+// public:
+// 	DivideByZero();
 
-	void printLog(const string& str = "",int pos = 0) const;
+// 	void printLog(const string& str = "",int pos = 0) const;
 
-};
+// };
 
-class WrongNumberFormat: public Exception
-{
-public:
-    WrongNumberFormat(const string& str);
+// class WrongNumberFormat: public Exception
+// {
+// public:
+//     WrongNumberFormat(const string& str);
 
-    void printLog(const string& str,int pos = 0) const;
-};
+//     void printLog(const string& str,int pos = 0) const;
+// };
 
 
 class Calc

@@ -13,8 +13,9 @@ int main(int argc, char const *argv[])
 			Calc calc(argv[1]);
 			cout << calc.calculate();
 		} 
-	} catch(Exception& exp)
+	} catch(std::exception& exp)
 		{
+			std::cout << "Error occured" << std::endl;
 			return(2);
 		}
 	return 0;
