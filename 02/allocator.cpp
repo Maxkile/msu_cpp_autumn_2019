@@ -16,24 +16,16 @@ LinerAllocator::LinerAllocator(size_t maxSize):maxSize(maxSize),left(maxSize)
 
 char* LinerAllocator::alloc(size_t size)
 {
-    if ((left == 0) || (size >> maxSize))
+    if ((left == 0) || (size > left))
     {
         return nullptr;   
     }
     else 
     {   
-        if (size <= left)
-        {
-            left -= size;
-            char* oldPointer = movingPointer;
-            movingPointer += size*sizeof(char);
-            return oldPointer;
-        }
-        else
-        {
-            left = 0;
-            return movingPointer;
-        }
+        left -= size;
+        char* oldPointer = movingPointer;
+        movingPointer += size*sizeof(char);
+        return oldPointer;
     }
 }
 

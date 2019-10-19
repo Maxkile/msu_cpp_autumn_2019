@@ -1,11 +1,12 @@
-test: test.o allocator.o
-	g++ test.o allocator.o -o test --std=c++14
-test.o: test.cpp
-	g++ -Wall  -O2 -c test.cpp --std=c++14
+main: main.o allocator.o
+	g++ -fsanitize=address main.o allocator.o -o main --std=c++14
+main.o: main.cpp
+	g++ -Wall  -O2 -c main.cpp --std=c++14
 allocator.o: allocator.cpp allocator.hpp
 	g++ -Wall  -O2 -c allocator.cpp --std=c++14
 clean:
-	rm -r *.o
+	rm *.o
 run:
-	./test
+	./main
 test:
+	python3 ./tester.py

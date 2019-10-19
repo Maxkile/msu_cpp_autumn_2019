@@ -1,11 +1,11 @@
 import subprocess
 
 def check(expression,result):
-    out = subprocess.run(['./main',expression],stdout=subprocess.PIPE)
+    out = subprocess.run(['./test',expression],stdout=subprocess.PIPE)
     if out.stdout != result:
         print('error {0} != {1}, got {2}'.format(expression,result,out.stdout))
     else:
-        print('OK')
+        print('TRUE')
         
 #receiving binary strings from cpp binary file         
 print("Start testing:")

@@ -16,6 +16,7 @@ int main(int argc, char const *argv[])
 	} catch(std::exception& exp)
 		{
 			std::cout << "Error occured" << std::endl;
+			std::cout << exp.what() << std::endl;
 			return(2);
 		}
 	return 0;
