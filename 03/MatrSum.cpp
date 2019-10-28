@@ -1,8 +1,8 @@
 #include "MatrSum.hpp"
 
-Matrix::Row::Row(int rowNumber,int* row):rowNumber(rowNumber),row(row){}
+Matrix::Row::Row(const size_t rowNumber,int* row):rowNumber(rowNumber),row(row){}
 
-int& Matrix::Row::operator[](int j )
+int& Matrix::Row::operator[](size_t j)
 {
     if ((j >= rowNumber) || (j < 0))
     {
@@ -17,35 +17,35 @@ int& Matrix::Row::operator[](int j )
 void Matrix::m_create()
 {
     matrix = new int*[rows];//int pointer array
-    for (int i = 0; i<rows;++i)
+    for (size_t i = 0; i<rows;++i)
     {
         matrix[i] = new int[columns];//int array
     }
 }
 
-Matrix::Matrix(const int rows,const int columns):rows(rows),columns(columns)
+Matrix::Matrix(const size_t rows,const size_t columns):rows(rows),columns(columns)
 {
     m_create();
 }
 
-Matrix::Matrix(const int size):rows(size),columns(size)
+Matrix::Matrix(const size_t size):rows(size),columns(size)
 {
     m_create();
 }
 
-Matrix::Matrix(Matrix& source):rows(source.rows),columns(source.columns)
+Matrix::Matrix(const Matrix& source):rows(source.rows),columns(source.columns)
 {
     m_create();
-    for(int i = 0;i<source.rows;++i)
+    for(size_t i = 0;i<source.rows;++i)
     {
-        for(int j = 0;j<source.columns;++j)
+        for(size_t j = 0;j<source.columns;++j)
         {
-            matrix[i][j] = source[i][j];
+            matrix[i][j] = source.matrix[i][j];
         }
     }
 }
 
-Matrix::Row Matrix::operator[](const int i)
+Matrix::Row Matrix::operator[](const size_t i)
 {
     if ((i >= rows) || (i < 0))
     {
@@ -60,9 +60,9 @@ Matrix::Row Matrix::operator[](const int i)
 
 Matrix& Matrix::operator=(const int number)
 {
-    for(int i = 0;i<rows;++i)
+    for(size_t i = 0;i<rows;++i)
     {
-        for(int j = 0;j<columns;++j)
+        for(size_t j = 0;j<columns;++j)
         {
             matrix[i][j] = number;
         }
@@ -72,9 +72,9 @@ Matrix& Matrix::operator=(const int number)
 
 Matrix& Matrix::operator*=(const int number)
 {
-    for(int i = 0;i<rows;++i)
+    for(size_t i = 0;i<rows;++i)
     {
-        for(int j = 0;j<columns;++j)
+        for(size_t j = 0;j<columns;++j)
         {
             matrix[i][j] *= number;
         }
@@ -82,16 +82,19 @@ Matrix& Matrix::operator*=(const int number)
     return (*this);
 }
 
-bool Matrix::operator==(Matrix& other)
+bool Matrix::operator==(const Matrix& other) const
 {
-    if ((other.getColumnsNumber() != columns) || (other.getRowsNumber() != rows)) return false;
+    if ((other.getColumnsNumber() != columns) || (other.getRowsNumber() != rows))
+    {
+         return false;
+    }
     else
     {
-        for(int i = 0;i<rows;++i)
+        for(size_t i = 0;i<rows;++i)
         {
-            for(int j = 0;j<columns;++j)
+            for(size_t j = 0;j<columns;++j)
             {
-                if (matrix[i][j] != other[i][j]) return false;
+                if (matrix[i][j] != other.matrix[i][j]) return false;
             }
         }
     return true;
@@ -99,26 +102,26 @@ bool Matrix::operator==(Matrix& other)
 
 }
 
-bool Matrix::operator!=(Matrix& other)
+bool Matrix::operator!=(const Matrix& other) const
 {
     return !((*this) == other);
 }
 
-int Matrix::getRowsNumber() const
+size_t Matrix::getRowsNumber() const
 {
     return rows;
 }
 
-int Matrix::getColumnsNumber() const
+size_t Matrix::getColumnsNumber() const
 {
     return columns;
 }  
 
-void Matrix::print()
+void Matrix::print() const
 {
-    for(int i = 0;i<rows;++i)
+    for(size_t i = 0;i<rows;++i)
     {
-        for(int j = 0;j<columns;++j)
+        for(size_t j = 0;j<columns;++j)
         {
             std::cout << matrix[i][j] << " ";
         }
@@ -128,7 +131,7 @@ void Matrix::print()
 
 Matrix::~Matrix()
 {
-    for(int i = 0;i<rows;++i)
+    for(size_t i = 0;i<rows;++i)
     {
         delete [] matrix[i];
     }

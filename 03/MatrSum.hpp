@@ -9,19 +9,19 @@ class Matrix{
 
     class Row
     {
-        int rowNumber;
+        size_t rowNumber;
         int* row;//copying the pointer here
 
         public:
 
-            Row(int rowNumber,int* row);
+        Row(size_t rowNumber,int* row);
 
-            int& operator[](int j );
+        int& operator[](const size_t j);
             
     };
 
-	int rows;
-	int columns;
+	size_t rows;
+	size_t columns;
 
     int** matrix;
 
@@ -29,28 +29,27 @@ class Matrix{
 
 public:
 
-    Matrix(const int rows,const int columns);
+    Matrix(const size_t rows,const size_t columns);
 
-    Matrix(const int size);
+    Matrix(const size_t size);
 
-    Matrix(Matrix& source);
+    Matrix(const Matrix& source);
 
-    Row operator[](const int i);
-
+    Row operator[](const size_t i);
 
     Matrix& operator=(const int number);
 
     Matrix& operator*=(const int number);
 
-    bool operator==(Matrix& other);
+    bool operator==(const Matrix& other) const;
 
-    bool operator!=(Matrix& other);
+    bool operator!=(const Matrix& other) const;
 
-    int getRowsNumber() const;
+    size_t getRowsNumber() const;
 
-    int getColumnsNumber() const;
+    size_t getColumnsNumber() const;
 
-    void print();
+    void print() const;
     
     ~Matrix();
 

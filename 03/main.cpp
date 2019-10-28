@@ -85,9 +85,6 @@ int main(int argc, char const *argv[])
             std::cout << exc.what() << std::endl;
             return(2);
         }
-        
-    return(0);
-        
+    return(0);      
     }
-    
 }
