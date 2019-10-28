@@ -14,6 +14,18 @@ int& Matrix::Row::operator[](size_t j)
     }
 }
 
+int Matrix::Row::operator[](size_t j) const
+{
+    if ((j >= rowNumber) || (j < 0))
+    {
+        throw std::out_of_range("Out of range!");
+    } 
+    else
+    {
+        return row[j];
+    }
+}
+
 void Matrix::m_create()
 {
     matrix = new int*[rows];//int pointer array
@@ -40,12 +52,12 @@ Matrix::Matrix(const Matrix& source):rows(source.rows),columns(source.columns)
     {
         for(size_t j = 0;j<source.columns;++j)
         {
-            matrix[i][j] = source.matrix[i][j];
+            matrix[i][j] = source[i][j];
         }
     }
 }
 
-Matrix::Row Matrix::operator[](const size_t i)
+Matrix::Row Matrix::operator[](const size_t i) const
 {
     if ((i >= rows) || (i < 0))
     {
@@ -56,6 +68,18 @@ Matrix::Row Matrix::operator[](const size_t i)
         return Row(columns,matrix[i]);
     }
 }
+
+// Matrix::Row Matrix::operator[](const size_t i)
+// {
+//     if ((i >= rows) || (i < 0))
+//     {
+//         throw std::out_of_range("Out of range!");
+//     } 
+//     else
+//     {
+//         return Row(columns,matrix[i]);
+//     }
+// }
 
 
 Matrix& Matrix::operator=(const int number)
@@ -94,7 +118,7 @@ bool Matrix::operator==(const Matrix& other) const
         {
             for(size_t j = 0;j<columns;++j)
             {
-                if (matrix[i][j] != other.matrix[i][j]) return false;
+                if (matrix[i][j] != other[i][j]) return false;
             }
         }
     return true;

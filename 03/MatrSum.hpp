@@ -17,6 +17,8 @@ class Matrix{
         Row(size_t rowNumber,int* row);
 
         int& operator[](const size_t j);
+
+        int operator[](const size_t j) const;
             
     };
 
@@ -35,7 +37,9 @@ public:
 
     Matrix(const Matrix& source);
 
-    Row operator[](const size_t i);
+    Row operator[](const size_t i) const;
+
+    // Row operator[](const size_t i);
 
     Matrix& operator=(const int number);
 
