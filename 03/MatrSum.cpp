@@ -4,6 +4,7 @@ Matrix::Row::Row(const size_t rowNumber,int* row):rowNumber(rowNumber),row(row){
 
 int& Matrix::Row::operator[](size_t j)
 {
+    std::cout << "NON CONST" << std::endl;
     if ((j >= rowNumber) || (j < 0))
     {
         throw std::out_of_range("Out of range!");
@@ -14,8 +15,9 @@ int& Matrix::Row::operator[](size_t j)
     }
 }
 
-int Matrix::Row::operator[](size_t j) const
+const int Matrix::Row::operator[](size_t j) const
 {
+    std::cout << "CONST" << std::endl;
     if ((j >= rowNumber) || (j < 0))
     {
         throw std::out_of_range("Out of range!");
@@ -57,8 +59,9 @@ Matrix::Matrix(const Matrix& source):rows(source.rows),columns(source.columns)
     }
 }
 
-Matrix::Row Matrix::operator[](const size_t i) const
+const Matrix::Row Matrix::operator[](const size_t i) const
 {
+     std::cout << "CONST OUTER" << std::endl;
     if ((i >= rows) || (i < 0))
     {
         throw std::out_of_range("Out of range!");
@@ -69,17 +72,18 @@ Matrix::Row Matrix::operator[](const size_t i) const
     }
 }
 
-// Matrix::Row Matrix::operator[](const size_t i)
-// {
-//     if ((i >= rows) || (i < 0))
-//     {
-//         throw std::out_of_range("Out of range!");
-//     } 
-//     else
-//     {
-//         return Row(columns,matrix[i]);
-//     }
-// }
+Matrix::Row Matrix::operator[](const size_t i)
+{
+    std::cout << "NON CONST OUTER" << std::endl;
+    if ((i >= rows) || (i < 0))
+    {
+        throw std::out_of_range("Out of range!");
+    } 
+    else
+    {
+        return Row(columns,matrix[i]);
+    }
+}
 
 
 Matrix& Matrix::operator=(const int number)

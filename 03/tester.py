@@ -17,3 +17,4 @@ check('--elem 5 5',b'Out of range!\n')
 check('--sizes',b'6 4\n')
 check('--compare',b'false\n')#comparing m1 and m2
 check('--default',b'')#default example from task
+check('--mult 23',b'46\n')

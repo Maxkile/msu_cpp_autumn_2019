@@ -2,12 +2,21 @@
 #include <iostream>
 #include <cassert>
 #include <cstring>
+#include <vector>
+
 
 int main(int argc, char const *argv[])
 {
+    std::vector<int> arr;
+    Matrix ml(0,0);
+    ml[0][0] = 2;
+    // int a = ml[0][0];
+    // arr[0] = 2;
+    // int b = arr[0];
+
     if (argc < 2)
     {
-        std::cout << "Input one of these commands: \"--elem\",\"--sizes\",\"--compare\",\"--mult\",\"--default\"" << std::endl;
+        std::cout << "Input one of these commands: \"--elem\",\"--change\",\"--sizes\",\"--compare\",\"--mult\",\"--default\"" << std::endl;
         return(1);
     }
     else
@@ -63,7 +72,7 @@ int main(int argc, char const *argv[])
                 assert(m.getRowsNumber() == 5);
                 assert(m.getColumnsNumber() == 3);
 
-                m[1][2] = 5; // строка 1, колонка 2
+                // m[1][2] = 5; // строка 1, колонка 2
                 
                 m *= 3; // умножение на число
 
@@ -74,9 +83,22 @@ int main(int argc, char const *argv[])
                     std::cout << "EQUAL" << std::endl;
                 }
             }
+            else if (!strcmp(argv[1],"--change"))
+            {
+                if (argc < 5)
+                {
+                    std::cout << "Row,column and value expected!" << std::endl;
+                    return(1);
+                }
+                else
+                {
+                    // m1[atoi(argv[2])][atoi(argv[3])] = atoi(argv[4]);
+                    std::cout << m1[atoi(argv[2])][atoi(argv[3])] << std::endl;   
+                }
+            }
             else
             {
-                std::cout << "Input one of these commands: \"--elem\",\"--sizes\",\"--compare\",\"--mult\",\"--default\"" << std::endl;
+                std::cout << "Input one of these commands: \"--elem\",\"--change\",\"--sizes\",\"--compare\",\"--mult\",\"--default\"" << std::endl;
                 return(1);
             }
         }
