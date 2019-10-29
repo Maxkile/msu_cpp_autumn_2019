@@ -7,13 +7,6 @@
 
 int main(int argc, char const *argv[])
 {
-    std::vector<int> arr;
-    Matrix ml(0,0);
-    ml[0][0] = 2;
-    // int a = ml[0][0];
-    // arr[0] = 2;
-    // int b = arr[0];
-
     if (argc < 2)
     {
         std::cout << "Input one of these commands: \"--elem\",\"--change\",\"--sizes\",\"--compare\",\"--mult\",\"--default\"" << std::endl;
@@ -92,7 +85,7 @@ int main(int argc, char const *argv[])
                 }
                 else
                 {
-                    // m1[atoi(argv[2])][atoi(argv[3])] = atoi(argv[4]);
+                    m1[atoi(argv[2])][atoi(argv[3])] = atoi(argv[4]);
                     std::cout << m1[atoi(argv[2])][atoi(argv[3])] << std::endl;   
                 }
             }
