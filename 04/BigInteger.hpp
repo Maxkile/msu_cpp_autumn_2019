@@ -15,8 +15,6 @@ class BigInteger
 
     void deleteHighZeroes();
 
-    int numReverse(const int source) const;
-
     void strrev(char* str);
 
     bool absolutelyLesser(const BigInteger& n);

@@ -56,19 +56,6 @@ void BigInteger::strrev(char* str)
 
 }
 
-int BigInteger::numReverse(const int source) const
-{
-    int num,res;
-    res = 0;
-    num = source;
-    while(num)
-    {
-        res = res * 10 + num % 10;
-        num /= 10;
-    }
-    return res;
-}
-
 bool BigInteger::absolutelyLesser(const BigInteger& n)
 {
     if ((isNeg) && (!n.isNeg))
