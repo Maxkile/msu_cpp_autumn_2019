@@ -44,16 +44,12 @@ void BigInteger::deleteHighZeroes()
 
 void BigInteger::strrev(char* str)
 {
-    char* temp = (char*) malloc(sizeof(char) * (length + 1));
-    memcpy(temp,str,(length + 1));
-    temp[length] = '\0';
-    for (int i=0; i< length;i++) 
+    for (int i=0; i < length/2;i++) 
     {
-        str[i] = temp[length-i-1];
-    }
-    
-    free(temp);
-
+        char tmp = str[i];
+        str[i] = str[length-i-1];
+        str[length-i-1] = tmp;
+    }    
 }
 
 bool BigInteger::absolutelyLesser(const BigInteger& n)
@@ -453,7 +449,7 @@ BigInteger::~BigInteger()
     free(number);
 }
 
-ostream& operator<<(ostream& out,BigInteger bigInt)
+ostream& operator<<(ostream& out,const BigInteger bigInt)
 {
     if (bigInt.isNeg) out << '-';
     

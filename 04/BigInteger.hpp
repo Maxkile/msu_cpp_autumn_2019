@@ -2,13 +2,15 @@
 #include <cstdlib>
 #include <cstring>
 
-using namespace std;
+#pragma once
 
 class BigInteger
 {
 
     char* number;//on 'length' position is '\0'
+
     int length;//'real' length
+
     bool isNeg;
 
     int getDigitsNumber(const int num) const;
@@ -49,11 +51,10 @@ public:
 
     BigInteger& operator-=(const BigInteger& source);
 
-
     BigInteger operator-(const BigInteger& source);
 
 
-
+    BigInteger operator-() const;
 
     
     bool operator==(const int source);
@@ -78,14 +79,13 @@ public:
 
     BigInteger operator-(const int source);
 
+
     
     void sum(BigInteger& term1,const BigInteger& term2);
 
     void diff(BigInteger& minuend,const BigInteger& subtr);
 
-    friend ostream& operator<<(ostream& out,BigInteger bigInt);
-
-    BigInteger operator-() const;
+    friend std::ostream& operator<<(std::ostream& out,const BigInteger bigInt);
 
     int getLength() const;
 
