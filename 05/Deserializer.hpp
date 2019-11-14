@@ -20,7 +20,8 @@ public:
         const Data::Error err =  modified.deserialize(*this);
         if (err == Data::Error::NoError)
         {
-            object = modified;
+            object = std::move(modified);
+            object = static_cast<Data&&>(modified);
         }
         return err;
     }
@@ -38,7 +39,7 @@ private:
     {  
         std::string text;
         in_ >> text;
-        if (std::is_same<bool,T>::value)
+        if constexpr (std::is_same<bool,T>::value)
         {           
             if (text == "true")
             {
@@ -64,16 +65,21 @@ private:
             {
                 return Data::Error::CorruptedArchive;
             }
+            catch (std::exception& exp)
+            {
+                std::cout << exp.what() << std::endl;//log
+                return Data::Error::CorruptedArchive;
+            }
 
         }
         return Data::Error::NoError;
     }
 
     template <class T,class... Args>
-    Data::Error process(T& first,Args&... args)
+    Data::Error process(T& first,Args&&... args)
     {
         if (checkRead(first) == Data::Error::CorruptedArchive) return Data::Error::CorruptedArchive;
-        return process(args...);
+        return process(std::forward<Args>(args)...);//forwards rvalues rvalues
     }
 
     template <class T>

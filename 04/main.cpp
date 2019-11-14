@@ -89,7 +89,6 @@ int main(int argc, char const *argv[])
         {
             BigInteger bi_1(leftOperand);
             int bi_2 = rightOperand;
-
             if (!strcmp(op,"+"))
             {
                 res = bi_1 + bi_2;

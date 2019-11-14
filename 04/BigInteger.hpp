@@ -21,6 +21,10 @@ class BigInteger
 
     bool absolutelyLesser(const BigInteger& n);
 
+    void sum(BigInteger& term1,const BigInteger& term2);
+
+    void diff(BigInteger& minuend,const BigInteger& subtr);
+
 public:
 
     BigInteger();
@@ -79,11 +83,6 @@ public:
 
     BigInteger operator-(const int source);
 
-
-    
-    void sum(BigInteger& term1,const BigInteger& term2);
-
-    void diff(BigInteger& minuend,const BigInteger& subtr);
 
     friend std::ostream& operator<<(std::ostream& out,const BigInteger bigInt);
 

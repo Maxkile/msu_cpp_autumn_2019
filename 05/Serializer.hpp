@@ -30,7 +30,7 @@ private:
     template <class T>
     Data::Error checkWrite(T& arg)
     {
-        if (!std::is_same<bool,T>::value)
+        if constexpr (!std::is_same<bool,T>::value)
         {
             if (!std::is_same<uint64_t,T>::value) return Data::Error::CorruptedArchive;
             else
@@ -48,10 +48,10 @@ private:
     }
 
     template <class T,class... Args>
-    Data::Error process(T& first,Args&... args)
+    Data::Error process(T& first,Args&&... args)
     {
         if (checkWrite(first) == Data::Error::CorruptedArchive) return Data::Error::CorruptedArchive;
-        return process(args...);
+        return process(std::forward<Args>(args)...);//forwards rvalues rvalues
     }
 
     template <class T>
