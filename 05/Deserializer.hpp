@@ -21,15 +21,14 @@ public:
         if (err == Data::Error::NoError)
         {
             object = std::move(modified);
-            object = static_cast<Data&&>(modified);
         }
         return err;
     }
 
     template <class ...ArgsT>
-    Data::Error operator()(ArgsT& ...args)
+    Data::Error operator()(ArgsT&& ...args)
     {
-        return process(args...);
+        return process(std::forward<ArgsT>(args)...);
     }
 
 private:
@@ -67,7 +66,7 @@ private:
             }
             catch (std::exception& exp)
             {
-                std::cout << exp.what() << std::endl;//log
+                std::cerr << exp.what() << std::endl;//log
                 return Data::Error::CorruptedArchive;
             }
 

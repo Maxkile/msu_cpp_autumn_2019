@@ -20,9 +20,9 @@ public:
     }
 
     template <class ...ArgsT>
-    Data::Error operator()(ArgsT ...args)
+    Data::Error operator()(ArgsT&& ...args)
     {
-        return process(args...);
+        return process(std::forward<ArgsT>(args)...);
     }
     
 private:

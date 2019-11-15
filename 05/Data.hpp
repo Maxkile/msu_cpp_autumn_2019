@@ -11,7 +11,6 @@ struct Data
     
     Data& operator=(Data&& moved)//moving operator
     {
-        std::cout << "HERE" << std::endl;
         if (this == &moved)
             return *this;
         a = moved.a;
