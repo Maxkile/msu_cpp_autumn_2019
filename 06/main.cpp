@@ -1,11 +1,11 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
-#include "Format.hpp"
+#include "format.hpp"
 
 int main(int argc, char const *argv[])
 {
-    auto text = format("{1}+{1} = {0}", 2, "one");
+    auto text = format("123132");
     assert(text == "one+one = 2");
     text = format("{0} {1} {2} {3} {4} {5} {6} {7}", 'I', "was","watching","my","mother","washing","the","dishes");
     assert(text == "I was watching my mother washing the dishes");

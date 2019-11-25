@@ -1,8 +1,14 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <stdexcept>
+
+void parseArgs(std::stringstream& argbuf,const char separator)
+{
+}
 
 template<typename T>
 void parseArgs(std::stringstream& argbuf,const char separator,T&& first)
@@ -26,7 +32,7 @@ std::vector<std::string> split(const std::string& inpString,const char& separato
     {
         if (inpString.at(i) == separator)
         {
-            res.push_back(buf);
+            res.push_back(std::move(buf));
             buf.clear();
         }
         else
@@ -36,12 +42,11 @@ std::vector<std::string> split(const std::string& inpString,const char& separato
     }
     if (!buf.empty())
     {
-        res.push_back(buf);
+        res.push_back(std::move(buf));
         buf.clear();
     }
     return res;
 }
-
 
 std::string parseFormatString(const std::string& format,const std::vector<std::string>& arguments)
 {
@@ -70,7 +75,7 @@ std::string parseFormatString(const std::string& format,const std::vector<std::s
             {
                 throw std::runtime_error("Wrong format of formatting string!");
             }
-            
+
             insideBrackets = false;
             result.append(arguments[curArgPos]);//"{}" expression
             buf.clear();
@@ -116,4 +121,3 @@ std::string format(const std::string& format,Args&& ...args)
 
     return parseFormatString(format,arguments);
 }
-
