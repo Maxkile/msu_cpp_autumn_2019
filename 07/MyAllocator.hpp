@@ -23,8 +23,6 @@ public:
 
     void destroy(pointer);
 
-    size_type getAvailable();
-
     ~MyAllocator();
 };
 
