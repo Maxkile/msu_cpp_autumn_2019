@@ -16,24 +16,24 @@ public:
 
 explicit MyVector(size_type initialLength = 0);
 
-    MyVector(const vector& other);
+    MyVector(const vector&);
 
-    MyVector(const vector& other,const allocator_type& allocator);
+    MyVector(const vector&,const allocator_type&);
     //not taking allocator
-    MyVector& operator=(const vector& other);
+    MyVector& operator=(const vector&);
 
-    void reserve(size_type newCapacity);
+    void reserve(size_type);
 
 
-    void resize(size_type newSize);
+    void resize(size_type);
 
-    void resize(size_type newSize,const value_type& value);
+    void resize(size_type,const value_type&);
 
     void clear();
 
-    void push_back(const value_type& elem);
+    void push_back(const value_type&);
 
-    void push_back(value_type&& elem);
+    void push_back(value_type&&);
 
     void pop_back();
 
@@ -47,11 +47,11 @@ explicit MyVector(size_type initialLength = 0);
 
     iterator rend();
 
-    allocator_type get_allocator();
+    allocator_type get_allocator() const;
 
-    value_type& operator[](size_type ind);
+    value_type& operator[](size_type);
 
-    const value_type operator[](size_type ind) const;
+    const value_type operator[](size_type) const;
 
     void shrink_to_fit();
 
@@ -112,13 +112,13 @@ MyVector<T,Allocator>::MyVector(const vector& other,const allocator_type& alloca
 }
 
 template<typename T,typename Allocator>
-MyVector<T,Allocator>&  MyVector<T,Allocator>::operator=(const vector& other)
+MyVector<T,Allocator>& MyVector<T,Allocator>::operator=(const vector& other)
 {
     deleteVector_();
-    // allocator_ = other.get_allocator();
+    allocator_ = other.get_allocator(); 
     first_ = allocator_.allocate(other.capacity());
     last_ = first_ + other.size();
-    end_ = first_ +  other.capacity();
+    end_ = first_ + other.capacity();
 
     copy(first_,other.first_,other.size());
 
@@ -202,7 +202,7 @@ void MyVector<T,Allocator>::push_back(value_type&& elem)
         capacity_ = capacity_ * 2 + 1;//reallocation is slow, so we reallocate extra
         reallocate_(capacity_);
     }
-    allocator_.construct(first_ + size(),elem);
+    allocator_.construct(first_ + size(),std::forward<value_type>(elem));
     last_++;        
 }
 
@@ -243,7 +243,7 @@ typename MyVector<T,Allocator>::iterator MyVector<T,Allocator>::rend()
 }
 
 template<typename T,typename Allocator>
-typename MyVector<T,Allocator>::allocator_type MyVector<T,Allocator>::get_allocator()
+typename MyVector<T,Allocator>::allocator_type MyVector<T,Allocator>::get_allocator() const
 {
     return allocator_;
 }
@@ -251,14 +251,12 @@ typename MyVector<T,Allocator>::allocator_type MyVector<T,Allocator>::get_alloca
 template<typename T,typename Allocator>
 typename MyVector<T,Allocator>::value_type& MyVector<T,Allocator>::operator[](size_type ind)
 {
-    std::cout << last_ - (first_ + ind) << std::endl;
     return *(first_ + ind);
 }
 
 template<typename T,typename Allocator>
 const typename MyVector<T,Allocator>::value_type MyVector<T,Allocator>::operator[](size_type ind)  const
 {
-    std::cout << last_ - first_ << std::endl;
     return *(first_ + ind);
 }
 
@@ -300,7 +298,7 @@ void MyVector<T,Allocator>::fillwith_(pointer src,size_type from,const value_typ
 {
     for(size_type i = from;i < size();++i)
     {
-        allocator_.construct(first_ + i,value);
+        allocator_.construct(src + i,value);
     }
 }
 template<typename T,typename Allocator>

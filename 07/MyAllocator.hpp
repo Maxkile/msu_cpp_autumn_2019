@@ -47,7 +47,7 @@ void MyAllocator<T>::destroy(pointer ptr)
 }
 
 template<typename T>
-T* MyAllocator<T>::allocate(size_type elemNumber)
+typename MyAllocator<T>::pointer MyAllocator<T>::allocate(size_type elemNumber)
 {   
     pointer ptr;
     if ((ptr = static_cast<pointer>(::operator new(sizeof(value_type) * elemNumber))) == nullptr)//raw mem

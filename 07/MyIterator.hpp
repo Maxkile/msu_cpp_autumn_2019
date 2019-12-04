@@ -12,47 +12,48 @@ public:
     using iterator = MyIterator<value_type>;
     using index_type = int;
 
-    MyIterator(pointer begin, pointer from);
+    MyIterator(pointer,pointer);
 
-    MyIterator(const iterator& another);
+    MyIterator(const iterator&);
+    
 
-    MyIterator& operator=(const iterator& another);
+    MyIterator& operator=(const iterator&);
 
-    bool operator==(const iterator& another) const;
+    bool operator==(const iterator&) const;
 
-    bool operator!=(const iterator& another) const;
+    bool operator!=(const iterator&) const;
 
-    bool operator>(const iterator& another) const;
+    bool operator>(const iterator&) const;
 
-    bool operator>=(const iterator& another) const;
+    bool operator>=(const iterator&) const;
 
-    bool operator<(const iterator& another) const;
+    bool operator<(const iterator&) const;
 
-    bool operator<=(const iterator& another) const;
+    bool operator<=(const iterator&) const;
 
-    value_type& operator[](index_type ind);
+    value_type& operator[](index_type);
 
-    const value_type& operator[](index_type ind) const;
+    const value_type& operator[](index_type) const;
 
     value_type& operator*();
 
     const value_type operator*() const;
 
-    iterator operator+(index_type ind);
+    iterator operator+(index_type);
 
-    iterator& operator+=(index_type ind);
+    iterator& operator+=(index_type);
 
-    iterator operator-(index_type ind);
+    iterator operator-(index_type);
 
-    iterator& operator-=(index_type ind);
+    iterator& operator-=(index_type);
 
     iterator& operator++();
 
-    void operator++(int unused);
+    void operator++(int);
 
     iterator& operator--();
 
-    void operator--(int unused);
+    void operator--(int);
 
 private:
     pointer begin_;
@@ -169,7 +170,7 @@ typename MyIterator<Iter>::iterator& MyIterator<Iter>::operator++()
 }
 
 template<typename Iter>
-void MyIterator<Iter>::operator++(int unused)
+void MyIterator<Iter>::operator++(int)
 {
     current_++;
 }
@@ -182,7 +183,7 @@ typename MyIterator<Iter>::iterator& MyIterator<Iter>::operator--()
 }
 
 template<typename Iter>
-void MyIterator<Iter>::operator--(int unused)
+void MyIterator<Iter>::operator--(int)
 {
     current_--;
 }

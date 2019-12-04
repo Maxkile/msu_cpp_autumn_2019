@@ -6,3 +6,5 @@ uninstall:
 	rm main
 test:
 	valgrind --leak-check=full --track-origins=yes -v ./main 
+run:
+	./main
